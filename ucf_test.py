@@ -25,8 +25,6 @@ def test(net, config, wind, test_loader, test_info, step, model_file = None):
         
         for i in range(len(test_loader.dataset)):
             
-            
-
             _data, _label = next(load_iter)
             
             _data = _data.cuda()
@@ -62,7 +60,7 @@ def test(net, config, wind, test_loader, test_info, step, model_file = None):
         wind.lines('scores', frame_predict)
         wind.lines('roc_curve',tpr,fpr)
         test_info["step"].append(step)
-        test_info["auc"].append(auc_score)
-        test_info["ap"].append(ap_score)
-        test_info["ac"].append(accuracy)
+        test_info["AUC"].append(auc_score)
+        test_info["AP"].append(ap_score)
+        test_info["AC"].append(accuracy)
         

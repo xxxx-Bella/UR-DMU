@@ -28,6 +28,34 @@ The following files need to be adapted in order to run the code on your own mach
 After the setup, simply run the following command: 
 
 start the visdom for visualizing the training phase
+```shell
+cd /home/featurize/work/yuxin/WVAD/UR-DMU && conda create -n "ur" python=3.9 && conda activate ur && pip install torch matplotlib scikit-learn tqdm wandb ipdb einops
+# conda info --envs
+
+# pip install visdom
+# git clone https://github.com/facebookresearch/visdom.git
+# cd visdom
+# npm install --no-optional
+# npm run build
+
+# pip install torch matplotlib scikit-learn tqdm 
+
+# python -m visdom.server
+python da_main.py  --lr '[0.0001]*1000'  --seed 1
+
+new-a: 
+
+93d9cb47ca8e71ecdf675438033ea06ebc9cfd9c
+```
+# Git Commit/Push
+    git config --global user.email "hyx18390659623@163.com" && git config --global user.name "xxxx-Bella"
+    # sudo chmod 777 /home/featurize/work/MyPaper/
+    git commit -m ""
+    git push origin main
+
+## Next
+* python list/make_gt_da.py (done)
+
 
 ```
 python -m visdom.server -p "port"(we use 2022)

@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+import wandb
+
 
 def norm(data):
     l2=torch.norm(data, p = 2, dim = -1, keepdim = True)
@@ -52,7 +54,7 @@ class AD_Loss(nn.Module):
 
 
 
-def train(net, normal_loader, abnormal_loader, optimizer, criterion, wind, index):
+def train(net, normal_loader, abnormal_loader, optimizer, criterion, wandb, index):
     net.train()
     net.flag = "Train"
     ninput, nlabel = next(normal_loader)
@@ -66,5 +68,7 @@ def train(net, normal_loader, abnormal_loader, optimizer, criterion, wind, index
     optimizer.zero_grad()
     cost.backward()
     optimizer.step()
-    for key in loss.keys():     
-        wind.plot_lines(key, loss[key].item())
+
+    # for key in loss.keys():     
+    #     # wind.plot_lines(key, loss[key].item())
+    #     wandb.log(key, loss[key].item())

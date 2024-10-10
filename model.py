@@ -32,8 +32,8 @@ class WSAD(Module):
         self.flag = flag
         self.a_nums = a_nums
         self.n_nums = n_nums
-
-        self.embedding = Temporal(input_size,512)
+        # breakpoint()
+        self.embedding = Temporal(input_size, 512)
         self.triplet = nn.TripletMarginLoss(margin=1)
         self.cls_head = ADCLS_head(1024, 1)
         self.Amemory = Memory_Unit(nums=a_nums, dim=512)

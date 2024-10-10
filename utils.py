@@ -2,34 +2,49 @@ import math
 import torch
 import numpy as np
 import random
-import visdom
+# import visdom
 
-class Visualizer(object):
-    def __init__(self, env = 'default', **kwargs):
-        self.vis = visdom.Visdom(env = env, **kwargs)
-        self.index = {}
+# class Visualizer(object):
+#     def __init__(self, env = 'default', **kwargs):
+#         self.vis = visdom.Visdom(env = env, **kwargs)
+#         self.index = {}
 
-    def plot_lines(self, name, y, **kwargs):
-        '''
-        self.plot('loss', 1.00)
-        '''
-        x = self.index.get(name, 0)
-        self.vis.line(Y = np.array([y]), X = np.array([x]),
-                      win = str(name),
-                      opts = dict(title=name),
-                      update = None if x == 0 else 'append',
-                      **kwargs
-                      )
-        self.index[name] = x + 1
-    def disp_image(self, name, img):
-        self.vis.image(img = img, win = name, opts = dict(title = name))
-    def lines(self, name, line, X = None):
-        if X is None:
-            self.vis.line(Y = line, win = name)
+#     def plot_lines(self, name, y, **kwargs):
+#         '''
+#         self.plot('loss', 1.00)
+#         '''
+#         x = self.index.get(name, 0)
+#         self.vis.line(Y = np.array([y]), X = np.array([x]),
+#                       win = str(name),
+#                       opts = dict(title=name),
+#                       update = None if x == 0 else 'append',
+#                       **kwargs
+#                       )
+#         self.index[name] = x + 1
+#     def disp_image(self, name, img):
+#         self.vis.image(img = img, win = name, opts = dict(title = name))
+#     def lines(self, name, line, X = None):
+#         if X is None:
+#             self.vis.line(Y = line, win = name)
+#         else:
+#             self.vis.line(X = X, Y = line, win = name)
+#     def scatter(self, name, data):
+#         self.vis.scatter(X = data, win = name)
+
+def process_feat(feat, length):
+    '''对输入的特征 feat 进行重新采样，将其处理为固定长度. 
+    length - 输出的目标长度
+    feat: (34, 2048)
+    '''
+    new_feat = np.zeros((length, feat.shape[1])).astype(np.float32)
+    # 均匀划分特征的区间 (32, 2048)
+    indexs = np.linspace(0, len(feat), length+1, dtype=int)  # (start, stop, num)=(0, 37, 33)  # array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 34])  将0~10个划分为33
+    for i in range(length):  # 32
+        if indexs[i]!=indexs[i+1]:
+            new_feat[i,:] = np.mean(feat[indexs[i]:indexs[i+1],:], 0)  # 计算每个区间内的均值
         else:
-            self.vis.line(X = X, Y = line, win = name)
-    def scatter(self, name, data):
-        self.vis.scatter(X = data, win = name)
+            new_feat[i,:] = feat[indexs[i],:]
+    return new_feat
 
 def set_seed(seed):
     torch.manual_seed(seed)
@@ -48,11 +63,13 @@ def norm(data):
     return torch.div(data, l2)
     
 def save_best_record(test_info, file_path):
-    fo = open(file_path, "w")
+    fo = open(file_path, "a")
     fo.write("Step: {}\n".format(test_info["step"][-1]))
-    fo.write("auc: {:.4f}\n".format(test_info["auc"][-1]))
-    fo.write("ap: {:.4f}\n".format(test_info["ap"][-1]))
-    fo.write("ac: {:.4f}\n".format(test_info["ac"][-1]))
+    fo.write("AUC: {:.4f}\n".format(test_info["AUC"][-1]))
+    fo.write("AP: {:.4f}\n".format(test_info["AP"][-1]))
+    # fo.write("ac: {:.4f}\n".format(test_info["ac"][-1]))
+    
+    fo.write("\n")
 
 
 
