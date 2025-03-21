@@ -146,7 +146,9 @@ class UCF_crime(data.DataLoader):
         if self.mode == "Test":
             return video_feature, label, name      
         else:
-            return video_feature, label      
+            return video_feature, label
+
+
 
 class XDVideo(data.DataLoader):
     def __init__(self, root_dir, mode, modal, num_segments, len_feature, seed=-1, is_normal=None):
